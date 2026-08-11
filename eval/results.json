@@ -1,0 +1,273 @@
+{
+  "aggregated_metrics": {
+    "num_questions": 16,
+    "k": 3,
+    "Recall@k / Hit Rate": 0.3125,
+    "MRR": 0.2812,
+    "nDCG@k": 0.2894,
+    "Context Precision": 0.2812,
+    "Faithfulness / Groundedness (mock LLM-judge)": 0.25,
+    "Answer Relevance (mock LLM-judge)": 0.4062,
+    "EM / F1": "N/A (Exact Match and F1 are highly unreliable for generative text; semantic metrics are preferred)",
+    "Retrieval p50 Latency (ms)": 6.47,
+    "Retrieval p95 Latency (ms)": 9.78
+  },
+  "per_question_results": [
+    {
+      "question": "Why is LanceDB cost-efficient?",
+      "expected_file": "sample.md",
+      "retrieved_files": [
+        "Gen AI_assignment.pdf",
+        "Gen AI_assignment.pdf",
+        "Gen AI_assignment.pdf"
+      ],
+      "hit": 0,
+      "mrr": 0.0,
+      "ndcg": 0.0,
+      "context_precision": 0.0,
+      "faithfulness": 0.0,
+      "relevance": 0.0,
+      "retrieval_latency_ms": 9.78
+    },
+    {
+      "question": "What does a RAG system use to fetch relevant context?",
+      "expected_file": "sample.md",
+      "retrieved_files": [
+        "sample.md",
+        "Gen AI_assignment.pdf",
+        "Gen AI_assignment.pdf"
+      ],
+      "hit": 1,
+      "mrr": 1.0,
+      "ndcg": 1.0,
+      "context_precision": 1.0,
+      "faithfulness": 1.0,
+      "relevance": 1.0,
+      "retrieval_latency_ms": 6.82
+    },
+    {
+      "question": "Does LanceDB rely heavily on in-memory storage?",
+      "expected_file": "sample.md",
+      "retrieved_files": [
+        "Gen AI_assignment.pdf",
+        "Gen AI_assignment.pdf",
+        "sample.html"
+      ],
+      "hit": 0,
+      "mrr": 0.0,
+      "ndcg": 0.0,
+      "context_precision": 0.0,
+      "faithfulness": 0.0,
+      "relevance": 0.5,
+      "retrieval_latency_ms": 6.35
+    },
+    {
+      "question": "Why is chunking text essential?",
+      "expected_file": "sample.md",
+      "retrieved_files": [
+        "sample.pdf",
+        "Gen AI_assignment.pdf",
+        "Gen AI_assignment.pdf"
+      ],
+      "hit": 0,
+      "mrr": 0.0,
+      "ndcg": 0.0,
+      "context_precision": 0.0,
+      "faithfulness": 0.0,
+      "relevance": 0.0,
+      "retrieval_latency_ms": 7.44
+    },
+    {
+      "question": "What metric do small overlapping chunks usually improve?",
+      "expected_file": "sample.md",
+      "retrieved_files": [
+        "Gen AI_assignment.pdf",
+        "Gen AI_assignment.pdf",
+        "Gen AI_assignment.pdf"
+      ],
+      "hit": 0,
+      "mrr": 0.0,
+      "ndcg": 0.0,
+      "context_precision": 0.0,
+      "faithfulness": 0.0,
+      "relevance": 0.0,
+      "retrieval_latency_ms": 6.46
+    },
+    {
+      "question": "Why do managed vector databases like Pinecone lead to high costs?",
+      "expected_file": "sample.html",
+      "retrieved_files": [
+        "sample.md",
+        "Gen AI_assignment.pdf",
+        "sample.pdf"
+      ],
+      "hit": 0,
+      "mrr": 0.0,
+      "ndcg": 0.0,
+      "context_precision": 0.0,
+      "faithfulness": 0.0,
+      "relevance": 0.5,
+      "retrieval_latency_ms": 6.56
+    },
+    {
+      "question": "What are two examples of embedded vector solutions?",
+      "expected_file": "sample.html",
+      "retrieved_files": [
+        "Gen AI_assignment.pdf",
+        "sample.md",
+        "Gen AI_assignment.pdf"
+      ],
+      "hit": 0,
+      "mrr": 0.0,
+      "ndcg": 0.0,
+      "context_precision": 0.0,
+      "faithfulness": 0.0,
+      "relevance": 0.5,
+      "retrieval_latency_ms": 6.47
+    },
+    {
+      "question": "Where can embedded solutions read data from directly?",
+      "expected_file": "sample.html",
+      "retrieved_files": [
+        "Gen AI_assignment.pdf",
+        "sample.md",
+        "Gen AI_assignment.pdf"
+      ],
+      "hit": 0,
+      "mrr": 0.0,
+      "ndcg": 0.0,
+      "context_precision": 0.0,
+      "faithfulness": 0.0,
+      "relevance": 0.5,
+      "retrieval_latency_ms": 6.15
+    },
+    {
+      "question": "Do managed vector databases charge when queries are infrequent?",
+      "expected_file": "sample.html",
+      "retrieved_files": [
+        "Gen AI_assignment.pdf",
+        "Gen AI_assignment.pdf",
+        "Gen AI_assignment.pdf"
+      ],
+      "hit": 0,
+      "mrr": 0.0,
+      "ndcg": 0.0,
+      "context_precision": 0.0,
+      "faithfulness": 0.0,
+      "relevance": 0.5,
+      "retrieval_latency_ms": 6.87
+    },
+    {
+      "question": "What is the purpose of the test PDF document?",
+      "expected_file": "sample.pdf",
+      "retrieved_files": [
+        "sample.md",
+        "Gen AI_assignment.pdf",
+        "sample.html"
+      ],
+      "hit": 0,
+      "mrr": 0.0,
+      "ndcg": 0.0,
+      "context_precision": 0.0,
+      "faithfulness": 0.0,
+      "relevance": 0.0,
+      "retrieval_latency_ms": 6.41
+    },
+    {
+      "question": "Is the PDF document simple or complex?",
+      "expected_file": "sample.pdf",
+      "retrieved_files": [
+        "Gen AI_assignment.pdf",
+        "Gen AI_assignment.pdf",
+        "Gen AI_assignment.pdf"
+      ],
+      "hit": 0,
+      "mrr": 0.0,
+      "ndcg": 0.0,
+      "context_precision": 0.0,
+      "faithfulness": 0.0,
+      "relevance": 0.0,
+      "retrieval_latency_ms": 5.78
+    },
+    {
+      "question": "What kind of pipeline is being tested in the PDF document?",
+      "expected_file": "sample.pdf",
+      "retrieved_files": [
+        "sample.pdf",
+        "Gen AI_assignment.pdf",
+        "sample.html"
+      ],
+      "hit": 1,
+      "mrr": 1.0,
+      "ndcg": 1.0,
+      "context_precision": 1.0,
+      "faithfulness": 1.0,
+      "relevance": 1.0,
+      "retrieval_latency_ms": 6.48
+    },
+    {
+      "question": "How does Pinecone charge for its infrastructure?",
+      "expected_file": "sample.html",
+      "retrieved_files": [
+        "sample.html",
+        "Gen AI_assignment.pdf",
+        "Gen AI_assignment.pdf"
+      ],
+      "hit": 1,
+      "mrr": 1.0,
+      "ndcg": 1.0,
+      "context_precision": 1.0,
+      "faithfulness": 1.0,
+      "relevance": 1.0,
+      "retrieval_latency_ms": 6.87
+    },
+    {
+      "question": "What does the acronym RAG stand for?",
+      "expected_file": "sample.md",
+      "retrieved_files": [
+        "sample.md",
+        "Gen AI_assignment.pdf",
+        "Gen AI_assignment.pdf"
+      ],
+      "hit": 1,
+      "mrr": 1.0,
+      "ndcg": 1.0,
+      "context_precision": 1.0,
+      "faithfulness": 0.0,
+      "relevance": 0.0,
+      "retrieval_latency_ms": 6.19
+    },
+    {
+      "question": "What makes ChromaDB and LanceDB much cheaper?",
+      "expected_file": "sample.html",
+      "retrieved_files": [
+        "Gen AI_assignment.pdf",
+        "Gen AI_assignment.pdf",
+        "Gen AI_assignment.pdf"
+      ],
+      "hit": 0,
+      "mrr": 0.0,
+      "ndcg": 0.0,
+      "context_precision": 0.0,
+      "faithfulness": 0.0,
+      "relevance": 0.0,
+      "retrieval_latency_ms": 5.69
+    },
+    {
+      "question": "What kind of storage does LanceDB use for large datasets?",
+      "expected_file": "sample.md",
+      "retrieved_files": [
+        "Gen AI_assignment.pdf",
+        "sample.md",
+        "sample.html"
+      ],
+      "hit": 1,
+      "mrr": 0.5,
+      "ndcg": 0.6309,
+      "context_precision": 0.5,
+      "faithfulness": 1.0,
+      "relevance": 1.0,
+      "retrieval_latency_ms": 6.26
+    }
+  ]
+}

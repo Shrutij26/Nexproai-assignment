@@ -1,0 +1,7 @@
+{
+  "embedding_dimension": 1536,
+  "vector_datatype": "float32 (4 bytes)",
+  "metadata_overhead": "1 KB per vector",
+  "storage_medium": "AWS EBS gp3 ($0.08 / GB / month)",
+  "managed_db_model": "Pinecone Standard Pod ($70 / pod / month, 1M capacity per pod)"
+}

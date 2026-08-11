@@ -1,0 +1,95 @@
+/home/codenia/.local/lib/python3.10/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+  from starlette.testclient import TestClient as TestClient  # noqa
+=== Testing Scenario 1: Question WITH an answer in the context ===
+Status Code: 200
+{
+  "answer": "This is a mocked answer based on the context. [Doc: sample.md, Chunk: 0]",
+  "retrieved_chunks": [
+    {
+      "id": "8f5113535c43e6adf8051f321acc0ed7",
+      "text": "# Cost-Efficient RAG Application\n\nA Retrieval-Augmented Generation (RAG) system uses a vector database to fetch relevant context before passing it to an LLM.\n\n## Why LanceDB?\nLanceDB is an embedded database that relies heavily on disk storage rather than in-memory storage, making it cost-efficient for large, lightly queried datasets.\n\n## Chunking\nChunking text is essential so that we don't pass the entire document into the LLM context window. Small, overlapping chunks usually provide better retrieval metrics like Recall@K.",
+      "filename": "sample.md",
+      "filetype": ".md",
+      "chunk_index": 0,
+      "score": 2962.646728515625
+    },
+    {
+      "id": "2f7084a802fe51b556dc9f8f178ddf54",
+      "text": "Vector Databases Comparison\n\n\nVector Databases Overview\nManaged vector databases like Pinecone charge for running pods even when queries are infrequent. This leads to high infrastructure costs.\nEmbedded solutions like ChromaDB and LanceDB are much cheaper for certain scale limits because they can read directly from disk or object storage.",
+      "filename": "sample.html",
+      "filetype": ".html",
+      "chunk_index": 0,
+      "score": 3077.609375
+    }
+  ],
+  "metrics": {
+    "retrieved_chunk_count": 2,
+    "retrieval_latency_ms": 9.69,
+    "total_latency_ms": 11.18,
+    "token_usage": {
+      "prompt_tokens": 0,
+      "completion_tokens": 0,
+      "total_tokens": 0
+    }
+  }
+}
+
+=== Testing Scenario 2: Question WITHOUT an answer ===
+Status Code: 200
+{
+  "answer": "No relevant context found",
+  "retrieved_chunks": [
+    {
+      "id": "8f5113535c43e6adf8051f321acc0ed7",
+      "text": "# Cost-Efficient RAG Application\n\nA Retrieval-Augmented Generation (RAG) system uses a vector database to fetch relevant context before passing it to an LLM.\n\n## Why LanceDB?\nLanceDB is an embedded database that relies heavily on disk storage rather than in-memory storage, making it cost-efficient for large, lightly queried datasets.\n\n## Chunking\nChunking text is essential so that we don't pass the entire document into the LLM context window. Small, overlapping chunks usually provide better retrieval metrics like Recall@K.",
+      "filename": "sample.md",
+      "filetype": ".md",
+      "chunk_index": 0,
+      "score": 2959.251953125
+    },
+    {
+      "id": "2f7084a802fe51b556dc9f8f178ddf54",
+      "text": "Vector Databases Comparison\n\n\nVector Databases Overview\nManaged vector databases like Pinecone charge for running pods even when queries are infrequent. This leads to high infrastructure costs.\nEmbedded solutions like ChromaDB and LanceDB are much cheaper for certain scale limits because they can read directly from disk or object storage.",
+      "filename": "sample.html",
+      "filetype": ".html",
+      "chunk_index": 0,
+      "score": 3006.9169921875
+    }
+  ],
+  "metrics": {
+    "retrieved_chunk_count": 2,
+    "retrieval_latency_ms": 5.73,
+    "total_latency_ms": 6.34,
+    "token_usage": {
+      "prompt_tokens": 0,
+      "completion_tokens": 0,
+      "total_tokens": 0
+    }
+  }
+}
+
+=== Testing Scenario 3: Metadata-filtered query ===
+Status Code: 200
+{
+  "answer": "This is a mocked answer based on the context. [Doc: sample.html, Chunk: 0]",
+  "retrieved_chunks": [
+    {
+      "id": "2f7084a802fe51b556dc9f8f178ddf54",
+      "text": "Vector Databases Comparison\n\n\nVector Databases Overview\nManaged vector databases like Pinecone charge for running pods even when queries are infrequent. This leads to high infrastructure costs.\nEmbedded solutions like ChromaDB and LanceDB are much cheaper for certain scale limits because they can read directly from disk or object storage.",
+      "filename": "sample.html",
+      "filetype": ".html",
+      "chunk_index": 0,
+      "score": 3228.87451171875
+    }
+  ],
+  "metrics": {
+    "retrieved_chunk_count": 1,
+    "retrieval_latency_ms": 8.62,
+    "total_latency_ms": 8.95,
+    "token_usage": {
+      "prompt_tokens": 0,
+      "completion_tokens": 0,
+      "total_tokens": 0
+    }
+  }
+}

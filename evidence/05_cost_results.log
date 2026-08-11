@@ -1,0 +1,27 @@
+[
+  {
+    "Vector count": "100K",
+    "LanceDB estimated storage/cost ($/mo)": "$0.05 (0.67 GB)",
+    "Managed vector DB estimated cost ($/mo)": "$70.00 (1 pod(s))",
+    "Difference/savings ($/mo)": "$69.95"
+  },
+  {
+    "Vector count": "1M",
+    "LanceDB estimated storage/cost ($/mo)": "$0.53 (6.68 GB)",
+    "Managed vector DB estimated cost ($/mo)": "$70.00 (1 pod(s))",
+    "Difference/savings ($/mo)": "$69.47"
+  },
+  {
+    "Vector count": "10M",
+    "LanceDB estimated storage/cost ($/mo)": "$5.34 (66.76 GB)",
+    "Managed vector DB estimated cost ($/mo)": "$700.00 (10.0 pod(s))",
+    "Difference/savings ($/mo)": "$694.66"
+  }
+]
+{
+  "embedding_dimension": 1536,
+  "vector_datatype": "float32 (4 bytes)",
+  "metadata_overhead": "1 KB per vector",
+  "storage_medium": "AWS EBS gp3 ($0.08 / GB / month)",
+  "managed_db_model": "Pinecone Standard Pod ($70 / pod / month, 1M capacity per pod)"
+}

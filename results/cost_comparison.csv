@@ -1,0 +1,4 @@
+Vector count,LanceDB estimated storage/cost ($/mo),Managed vector DB estimated cost ($/mo),Difference/savings ($/mo)
+100K,$0.05 (0.67 GB),$70.00 (1 pod(s)),$69.95
+1M,$0.53 (6.68 GB),$70.00 (1 pod(s)),$69.47
+10M,$5.34 (66.76 GB),$700.00 (10.0 pod(s)),$694.66

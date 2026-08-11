@@ -1,0 +1,82 @@
+[
+  {
+    "question": "Why is LanceDB cost-efficient?",
+    "expected_filename": "sample.md",
+    "expected_answer": "LanceDB is cost-efficient because it relies on disk storage rather than in-memory storage, avoiding always-on costs."
+  },
+  {
+    "question": "What does a RAG system use to fetch relevant context?",
+    "expected_filename": "sample.md",
+    "expected_answer": "A RAG system uses a vector database to fetch relevant context."
+  },
+  {
+    "question": "Does LanceDB rely heavily on in-memory storage?",
+    "expected_filename": "sample.md",
+    "expected_answer": "No, LanceDB relies heavily on disk storage."
+  },
+  {
+    "question": "Why is chunking text essential?",
+    "expected_filename": "sample.md",
+    "expected_answer": "Chunking is essential so that the entire document is not passed into the LLM context window."
+  },
+  {
+    "question": "What metric do small overlapping chunks usually improve?",
+    "expected_filename": "sample.md",
+    "expected_answer": "Small, overlapping chunks usually provide better retrieval metrics like Recall@K."
+  },
+  {
+    "question": "Why do managed vector databases like Pinecone lead to high costs?",
+    "expected_filename": "sample.html",
+    "expected_answer": "They charge for running pods even when queries are infrequent."
+  },
+  {
+    "question": "What are two examples of embedded vector solutions?",
+    "expected_filename": "sample.html",
+    "expected_answer": "ChromaDB and LanceDB are examples of embedded solutions."
+  },
+  {
+    "question": "Where can embedded solutions read data from directly?",
+    "expected_filename": "sample.html",
+    "expected_answer": "They can read directly from disk or object storage."
+  },
+  {
+    "question": "Do managed vector databases charge when queries are infrequent?",
+    "expected_filename": "sample.html",
+    "expected_answer": "Yes, they charge for running pods even during infrequent queries."
+  },
+  {
+    "question": "What is the purpose of the test PDF document?",
+    "expected_filename": "sample.pdf",
+    "expected_answer": "The PDF document is for testing the LanceDB ingestion pipeline."
+  },
+  {
+    "question": "Is the PDF document simple or complex?",
+    "expected_filename": "sample.pdf",
+    "expected_answer": "It is a simple PDF document."
+  },
+  {
+    "question": "What kind of pipeline is being tested in the PDF document?",
+    "expected_filename": "sample.pdf",
+    "expected_answer": "The LanceDB ingestion pipeline is being tested."
+  },
+  {
+    "question": "How does Pinecone charge for its infrastructure?",
+    "expected_filename": "sample.html",
+    "expected_answer": "Pinecone charges for running pods."
+  },
+  {
+    "question": "What does the acronym RAG stand for?",
+    "expected_filename": "sample.md",
+    "expected_answer": "RAG stands for Retrieval-Augmented Generation."
+  },
+  {
+    "question": "What makes ChromaDB and LanceDB much cheaper?",
+    "expected_filename": "sample.html",
+    "expected_answer": "They are much cheaper because they read directly from disk or object storage."
+  },
+  {
+    "question": "What kind of storage does LanceDB use for large datasets?",
+    "expected_filename": "sample.md",
+    "expected_answer": "LanceDB uses disk storage for large datasets."
+  }
+]

@@ -1,0 +1,11 @@
+{
+  "num_requests": 80,
+  "retrieval_latency_ms": {
+    "p50": 11.93,
+    "p95": 17.02
+  },
+  "end_to_end_latency_ms": {
+    "p50": 13.12,
+    "p95": 18.56
+  }
+}

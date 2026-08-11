@@ -1,0 +1,24 @@
+/home/codenia/Videos/nexproai/src/ingest.py:8: DeprecationWarning: `langchain-community` is being sunset and is no longer actively maintained. See https://github.com/langchain-ai/langchain-community/issues/674 for details and migration guidance toward standalone integration packages.
+  from langchain_community.document_loaders import PyPDFLoader, BSHTMLLoader, TextLoader
+Scanning directory: ./data/raw
+Using FakeEmbeddings for testing since no valid OpenAI key is provided.
+Processing sample.md...
+  -> Generated 1 chunks.
+Processing sample.pdf...
+  -> Generated 1 chunks.
+Processing sample.html...
+  -> Generated 1 chunks.
+Connecting to LanceDB at ./data/lancedb
+Table document_chunks exists. Performing idempotent merge-insert.
+Rows before ingest: 3
+Rows after ingest: 3
+Added 0 new records.
+
+--- INGESTION SUMMARY ---
+Number of documents processed: 3
+Number of chunks created: 3
+Number of vectors stored in LanceDB: 3
+Sample stored chunk:
+{'id': '8f5113535c43e6adf8051f321acc0ed7', 'vector': '<vector of length 1536>', 'text': "# Cost-Efficient RAG Application\n\nA Retrieval-Augmented Generation (RAG) system uses a vector database to fetch relevant context before passing it to an LLM.\n\n## Why LanceDB?\nLanceDB is an embedded database that relies heavily on disk storage rather than in-memory storage, making it cost-efficient for large, lightly queried datasets.\n\n## Chunking\nChunking text is essential so that we don't pass the entire document into the LLM context window. Small, overlapping chunks usually provide better retrieval metrics like Recall@K.", 'filename': 'sample.md', 'filetype': '.md', 'chunk_index': 0}
+-------------------------
+

@@ -1,0 +1,15 @@
+# Environment variables (NEVER COMMIT THIS)
+.env
+
+# Python caches and virtual environments
+venv/
+env/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Generated Database (Users will generate this locally)
+data/lancedb/
+
+# OS generated files
+.DS_Store
