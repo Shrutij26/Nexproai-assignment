@@ -1,5 +1,7 @@
 # Cost-Efficient RAG Application
 
+🟢 **Live Demo:** [Test the Streamlit UI live here!](https://nexproai-assignment-7yrqnapuqzfg27lqedtxbi.streamlit.app/)
+
 ## Project Overview and Objective
 This project implements a highly cost-efficient Retrieval-Augmented Generation (RAG) system. The core objective is to build a high-performance RAG pipeline that avoids the exorbitant "always-on" costs of managed vector databases (like Pinecone) by utilizing an embedded, disk-optimized vector store. The system supports full ingestion of PDF, HTML, and Markdown files, provides a robust FastAPI querying endpoint, and includes an exhaustive evaluation harness.
 
@@ -170,4 +172,3 @@ While LanceDB is exceptionally cost-efficient, a managed DB becomes preferable w
 1. **Massive Concurrency**: Handling thousands of QPS requires dedicated horizontal scaling and fleet management that an embedded app server can't sustain.
 2. **Ultra-Low Latency**: If the app requires sub-millisecond retrieval, purely in-memory databases outperform disk-backed ones.
 3. **Complex Multi-Tenancy**: When robust out-of-the-box Role-Based Access Control (RBAC) per namespace is strictly required.
-# Nexproai-assignment
