@@ -2,6 +2,7 @@
 
 🟢 **Live Demo:** [Test the Streamlit UI live here!](https://nexproai-assignment-7yrqnapuqzfg27lqedtxbi.streamlit.app/)
 
+⚠️ **Important Note for Local Testing:** The architecture requires running the backend and frontend simultaneously. You MUST open **two separate terminal tabs**—one for the FastAPI server (`uvicorn`) and a second one for the UI (`streamlit`).
 ## Project Overview and Objective
 This project implements a highly cost-efficient Retrieval-Augmented Generation (RAG) system. The core objective is to build a high-performance RAG pipeline that avoids the exorbitant "always-on" costs of managed vector databases (like Pinecone) by utilizing an embedded, disk-optimized vector store. The system supports full ingestion of PDF, HTML, and Markdown files, provides a robust FastAPI querying endpoint, and includes an exhaustive evaluation harness.
 
