@@ -7,7 +7,8 @@ from pydantic import BaseModel
 import lancedb
 from dotenv import load_dotenv
 
-from langchain_openai import OpenAIEmbeddings, ChatOpenAI
+from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_openai import ChatOpenAI
 from langchain_core.messages import SystemMessage, HumanMessage
 
 from config import Config
@@ -36,16 +37,22 @@ class QueryResponse(BaseModel):
 
 # Helper to get embeddings model
 def get_embeddings_model():
-    if not Config.OPENAI_API_KEY or Config.OPENAI_API_KEY.startswith("sk-mock") or Config.OPENAI_API_KEY.startswith("your_api"):
+    if not Config.OPENAI_API_KEY or Config.OPENAI_API_KEY.startswith("sk-mock") or Config.OPENAI_API_KEY.startswith("your_api") or Config.OPENAI_API_KEY == "your_groq_api_key_here":
         from langchain_core.embeddings import FakeEmbeddings
-        return FakeEmbeddings(size=1536)
-    return OpenAIEmbeddings(model=Config.EMBEDDING_MODEL)
+        # all-MiniLM-L6-v2 has dimension 384
+        return FakeEmbeddings(size=384)
+    return HuggingFaceEmbeddings(model_name=Config.EMBEDDING_MODEL)
 
 def get_llm():
-    if not Config.OPENAI_API_KEY or Config.OPENAI_API_KEY.startswith("sk-mock") or Config.OPENAI_API_KEY.startswith("your_api"):
+    if not Config.OPENAI_API_KEY or Config.OPENAI_API_KEY.startswith("sk-mock") or Config.OPENAI_API_KEY.startswith("your_api") or Config.OPENAI_API_KEY == "your_groq_api_key_here":
         return None # Indicate fake LLM needed
-    # Use cost-efficient model for generation
-    return ChatOpenAI(model="gpt-4o-mini", temperature=0)
+    # Use OpenAI-compatible endpoint (Groq) for cost-efficient generation
+    return ChatOpenAI(
+        model="llama3-8b-8192", 
+        temperature=0, 
+        api_key=Config.OPENAI_API_KEY, 
+        base_url="https://api.groq.com/openai/v1"
+    )
 
 @app.post("/query", response_model=QueryResponse)
 async def query_rag(request: QueryRequest):

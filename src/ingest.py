@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 
 from langchain_community.document_loaders import PyPDFLoader, BSHTMLLoader, TextLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain_openai import OpenAIEmbeddings
+from langchain_huggingface import HuggingFaceEmbeddings
 
 # Load config
 from config import Config
@@ -43,12 +43,12 @@ def process_documents(data_dir: str) -> List[Dict[str, Any]]:
     )
     
     # Initialize embeddings model
-    if not Config.OPENAI_API_KEY or Config.OPENAI_API_KEY.startswith("sk-mock") or Config.OPENAI_API_KEY.startswith("your_api"):
-        print("Using FakeEmbeddings for testing since no valid OpenAI key is provided.")
+    if not Config.OPENAI_API_KEY or Config.OPENAI_API_KEY.startswith("sk-mock") or Config.OPENAI_API_KEY.startswith("your_api") or Config.OPENAI_API_KEY == "your_groq_api_key_here":
+        print("Using FakeEmbeddings for testing since no valid API key is provided.")
         from langchain_core.embeddings import FakeEmbeddings
-        embeddings_model = FakeEmbeddings(size=1536) # Default size for text-embedding-3-small
+        embeddings_model = FakeEmbeddings(size=384) # Default size for all-MiniLM-L6-v2
     else:
-        embeddings_model = OpenAIEmbeddings(model=Config.EMBEDDING_MODEL)
+        embeddings_model = HuggingFaceEmbeddings(model_name=Config.EMBEDDING_MODEL)
     
     records = []
     

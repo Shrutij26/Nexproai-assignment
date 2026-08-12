@@ -36,7 +36,7 @@ with st.sidebar:
     st.header("⚙️ Under the Hood")
     st.markdown(f"**Database:** LanceDB (Embedded)")
     st.markdown(f"**Embeddings:** {os.getenv('EMBEDDING_MODEL', 'text-embedding-3-small')}")
-    st.markdown(f"**LLM:** gpt-4o-mini")
+    st.markdown(f"**LLM:** Llama-3-8B (via Groq API) *(Note: You can use a real OpenAI API Key for even better results!)*")
     st.divider()
     
     st.header("📁 Add a Document")

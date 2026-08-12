@@ -6,8 +6,8 @@ load_dotenv()
 
 class Config:
     OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-    # Using small embeddings for cost efficiency
-    EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "text-embedding-3-small")
+    # Using local embeddings for cost efficiency
+    EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "all-MiniLM-L6-v2")
     
     # Chunking Configuration
     CHUNK_SIZE = int(os.getenv("CHUNK_SIZE", "1000"))

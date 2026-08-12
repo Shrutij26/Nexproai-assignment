@@ -74,7 +74,7 @@ flowchart TB
 - **Language**: Python 3.10+
 - **API Framework**: FastAPI & Uvicorn
 - **Vector Store**: LanceDB (Embedded)
-- **Embeddings/LLM**: `langchain-openai` (`text-embedding-3-small`, `gpt-4o-mini`)
+- **Embeddings/LLM**: `langchain-huggingface` (`all-MiniLM-L6-v2`) and Groq API (`llama3-8b-8192` via OpenAI integration). *Note: You can easily swap this with a real OpenAI API Key for even better results!*
 - **Document Parsers**: `pypdf`, `beautifulsoup4`, LangChain `TextLoader`
 - **Evaluation**: Custom scripts computing Hit Rate, MRR, nDCG, Context Precision, Faithfulness.
 
@@ -112,7 +112,7 @@ flowchart TB
    ```
 
 ### `.env` Configuration
-Open `.env` and fill in your OpenAI API Key. (If left as `sk-mock-...`, the system safely falls back to `FakeEmbeddings` and mock LLM responses to allow cost-free testing of the logic flow).
+Open `.env` and fill in your Groq API Key (we place it in the `OPENAI_API_KEY` slot to leverage the standard OpenAI integration). If you want better results and have an actual OpenAI account, you can paste your real OpenAI API Key starting with `sk-...` here instead!
 ```env
 OPENAI_API_KEY=sk-...
 CHUNK_SIZE=1000
