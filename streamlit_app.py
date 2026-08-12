@@ -1,12 +1,20 @@
 import streamlit as st
-import requests
 import json
 import os
+import sys
+import time
 from dotenv import load_dotenv
+
+# Add src to path so we can import internal modules directly
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "src")))
+from config import Config
+from ingest import process_documents, ingest_to_lancedb
+from api import get_embeddings_model, get_llm
+from langchain_core.messages import SystemMessage, HumanMessage
+import lancedb
 
 # Load environment variables
 load_dotenv()
-API_URL = os.getenv("API_URL", "http://localhost:8000")
 
 # Page config
 st.set_page_config(page_title="Cost-Efficient RAG", page_icon="🔍", layout="wide")
@@ -25,6 +33,118 @@ st.markdown("""
     }
     </style>
     """, unsafe_allow_html=True)
+
+# --- HELPER FUNCTIONS ---
+def local_query(question: str, k: int):
+    start_time = time.time()
+    embeddings_model = get_embeddings_model()
+    try:
+        query_vector = embeddings_model.embed_query(question)
+    except Exception as e:
+        return {"error": f"Embedding error: {str(e)}"}
+
+    db = lancedb.connect(Config.LANCEDB_URI)
+    CACHE_TABLE = "semantic_cache"
+
+    try:
+        if CACHE_TABLE in db.table_names():
+            cache_tbl = db.open_table(CACHE_TABLE)
+            cache_results = cache_tbl.search(query_vector).limit(1).to_pandas()
+            if not cache_results.empty:
+                best_match = cache_results.iloc[0]
+                if best_match.get("_distance", 1.0) < 0.15:
+                    cache_latency = time.time() - start_time
+                    return {
+                        "answer": best_match["answer"],
+                        "retrieved_chunks": [],
+                        "metrics": {
+                            "retrieved_chunk_count": 0,
+                            "retrieval_latency_ms": 0,
+                            "total_latency_ms": round(cache_latency * 1000, 2)
+                        }
+                    }
+    except Exception:
+        pass # Ignore cache read errors
+
+    retrieval_start = time.time()
+    try:
+        tbl = db.open_table(Config.TABLE_NAME)
+    except Exception:
+        return {"error": "Vector index not found. Please run ingestion first."}
+
+    search = tbl.search(query_vector).limit(k)
+    try:
+        results = search.to_pandas()
+    except Exception as e:
+        return {"error": f"Search error: {str(e)}"}
+
+    retrieval_latency = time.time() - retrieval_start
+    retrieved_chunks = []
+    contexts = []
+    if not results.empty:
+        for idx, row in results.iterrows():
+            retrieved_chunks.append({
+                "id": row["id"],
+                "text": row["text"],
+                "filename": row["filename"],
+                "filetype": row["filetype"],
+                "chunk_index": row["chunk_index"],
+                "score": row.get("_distance", 0.0)
+            })
+            contexts.append(f"[Doc: {row['filename']}, Chunk: {row['chunk_index']}]\n{row['text']}")
+
+    context_str = "\n\n".join(contexts)
+
+    system_prompt = (
+        "You are an AI assistant designed to answer questions strictly based on the provided context.\n"
+        "Instructions:\n"
+        "1. Use ONLY the retrieved context below to answer the user's question.\n"
+        "2. If the context does not contain the answer, you MUST reply exactly with: 'No relevant context found'. Do not hallucinate or guess.\n"
+        "3. When you use information from the context, cite your sources by appending the document and chunk reference, e.g., '[Doc: filename.pdf, Chunk: 0]'.\n\n"
+        f"Context:\n{context_str}"
+    )
+
+    llm = get_llm()
+    if llm is None:
+        if not retrieved_chunks:
+            answer = "No relevant context found"
+        else:
+            q_words = set(w for w in question.lower().split() if len(w) > 4)
+            c_words = set(context_str.lower().split())
+            if len(q_words.intersection(c_words)) > 0:
+                doc_cite = f"[Doc: {retrieved_chunks[0]['filename']}, Chunk: {retrieved_chunks[0]['chunk_index']}]"
+                answer = f"This is a mocked answer based on the context. {doc_cite}"
+            else:
+                answer = "No relevant context found"
+    else:
+        messages = [
+            SystemMessage(content=system_prompt),
+            HumanMessage(content=question)
+        ]
+        response = llm.invoke(messages)
+        answer = response.content
+
+    if "No relevant context found" not in answer:
+        cache_data = [{"vector": query_vector, "question": question, "answer": f"⚡ [CACHED] {answer}"}]
+        try:
+            if CACHE_TABLE in db.table_names():
+                cache_tbl = db.open_table(CACHE_TABLE)
+                cache_tbl.add(cache_data)
+            else:
+                db.create_table(CACHE_TABLE, data=cache_data)
+        except Exception:
+            pass
+
+    total_latency = time.time() - start_time
+    return {
+        "answer": answer,
+        "retrieved_chunks": retrieved_chunks,
+        "metrics": {
+            "retrieved_chunk_count": len(retrieved_chunks),
+            "retrieval_latency_ms": round(retrieval_latency * 1000, 2),
+            "total_latency_ms": round(total_latency * 1000, 2)
+        }
+    }
 
 # --- HEADER ---
 st.title("🔍 Cost-Efficient Document Search")
@@ -45,15 +165,17 @@ with st.sidebar:
     if uploaded_file is not None:
         if st.button("Upload to Knowledge Base", use_container_width=True):
             with st.status("Processing..."):
-                files = {"file": (uploaded_file.name, uploaded_file.getvalue(), uploaded_file.type)}
                 try:
-                    res = requests.post(f"{API_URL}/upload", files=files)
-                    if res.status_code == 200:
-                        st.success(f"Added {uploaded_file.name}!")
-                    else:
-                        st.error(f"Something went wrong: {res.text}")
+                    os.makedirs(Config.DATA_DIR, exist_ok=True)
+                    file_path = os.path.join(Config.DATA_DIR, uploaded_file.name)
+                    with open(file_path, "wb") as f:
+                        f.write(uploaded_file.getvalue())
+                        
+                    records = process_documents(Config.DATA_DIR)
+                    ingest_to_lancedb(records)
+                    st.success(f"Added {uploaded_file.name}!")
                 except Exception as e:
-                    st.error(f"Couldn't connect to the backend: {e}")
+                    st.error(f"Failed to process file: {e}")
 
     st.divider()
     st.header("📊 Pipeline Performance")
@@ -98,9 +220,10 @@ with tab_query:
         else:
             with st.spinner("Looking through documents..."):
                 try:
-                    response = requests.post(f"{API_URL}/query", json={"question": question, "k": k_value})
-                    if response.status_code == 200:
-                        data = response.json()
+                    data = local_query(question, k_value)
+                    if "error" in data:
+                        st.error(data["error"])
+                    else:
                         answer = data.get("answer", "")
                         chunks = data.get("retrieved_chunks", [])
                         metrics = data.get("metrics", {})
@@ -126,11 +249,8 @@ with tab_query:
                             for c in chunks:
                                 st.markdown(f"**From `{c['filename']}`** (Similarity: `{c['score']:.2f}`)")
                                 st.info(c['text'])
-                                
-                    else:
-                        st.error(f"Backend returned an error: {response.text}")
-                except requests.exceptions.ConnectionError:
-                    st.error("Couldn't connect to the backend server. Make sure FastAPI is running.")
+                except Exception as e:
+                    st.error(f"An error occurred: {e}")
 
 with tab_kb:
     st.write("Here are the raw files that are currently chunked and indexed in the LanceDB database.")
