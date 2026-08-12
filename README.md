@@ -9,17 +9,65 @@ This project implements a highly cost-efficient Retrieval-Augmented Generation (
 The pipeline follows a standard robust RAG architecture:
 
 ```mermaid
-graph TD
-    A[Raw Documents: PDF, HTML, MD] --> B[LangChain Loaders]
-    B --> C[RecursiveCharacterTextSplitter]
-    C --> D[OpenAI Embeddings / FakeEmbeddings fallback]
-    D --> E[(LanceDB Embedded Vector Store)]
+flowchart TB
+    %% Premium Styling Definitions
+    classDef frontend fill:#2C3E50,stroke:#fff,stroke-width:2px,color:#fff,rx:10px
+    classDef api fill:#1B4F72,stroke:#fff,stroke-width:2px,color:#fff,rx:10px
+    classDef db fill:#0E6251,stroke:#fff,stroke-width:2px,color:#fff,rx:10px
+    classDef llm fill:#4A235A,stroke:#fff,stroke-width:2px,color:#fff,rx:10px
+    classDef doc fill:#E8F8F5,stroke:#117A65,stroke-width:2px,color:#117A65,rx:5px
+    classDef fallback fill:#FADBD8,stroke:#922B21,stroke-width:2px,color:#922B21,rx:5px
+    classDef success fill:#D5F5E3,stroke:#1D8348,stroke-width:2px,color:#1D8348,rx:5px
+    classDef internal fill:#F2F4F4,stroke:#7F8C8D,stroke-width:1px,color:#2C3E50,rx:5px
+
+    subgraph UserInterface["🌐 Streamlit Presentation Layer"]
+        UI[User Query Input]:::frontend
+        Upload[Document Upload UI]:::frontend
+    end
+
+    subgraph BackendAPI["🚀 FastAPI Microservice"]
+        direction TB
+        UploadEndpoint[POST /upload]:::api
+        QueryEndpoint[POST /query]:::api
+        TopK[Top-K Vector Similarity Search<br/>+ Metadata Filters]:::internal
+        ContextCheck{Is Context<br/>Relevant?}:::internal
+    end
+
+    subgraph IngestionPipeline["⚙️ Idempotent Ingestion Pipeline"]
+        direction TB
+        Raw[Raw Documents<br/>PDF / HTML / MD]:::doc
+        Splitter[Recursive Text Splitter<br/>Chunk: 1000, Overlap: 200]:::internal
+        Hasher[MD5 Hashing<br/>Prevents Duplicates]:::internal
+        Embed1[OpenAI Embeddings<br/>text-embedding-3-small]:::llm
+        
+        Raw --> Splitter --> Hasher --> Embed1
+    end
+
+    subgraph DataStore["💽 Embedded Storage"]
+        LanceDB[(LanceDB Local Disk Store<br/>Vectors + Metadata)]:::db
+    end
     
-    F[User Query via FastAPI] --> G[Embed Query]
-    G --> H[Top-K Similarity Search + Metadata Filter]
-    E --> H
-    H --> I[LLM Generation + Hallucination Check]
-    I --> J[Grounded Answer with Citations]
+    subgraph LLMEngine["🧠 LLM Generation Engine"]
+        LLM[gpt-4o-mini<br/>Strict Citation Prompt]:::llm
+    end
+
+    %% Data Flow Routing
+    Upload -->|Multipart File| UploadEndpoint
+    UploadEndpoint --> |Triggers| Raw
+    Embed1 -->|merge_insert| LanceDB
+    
+    UI -->|JSON Payload| QueryEndpoint
+    QueryEndpoint --> |Extracts Question| TopK
+    
+    TopK -.->|Queries| LanceDB
+    LanceDB -.->|Returns Chunks| ContextCheck
+    
+    ContextCheck -- "✅ Found Context" --> LLM
+    ContextCheck -- "❌ No Context" --> AntiHallucinate[Safe Fallback:<br/>'No relevant context found']:::fallback
+    
+    LLM --> Final[Grounded Answer<br/>+ Exact Source Citations]:::success
+    Final --> UI
+    AntiHallucinate --> UI
 ```
 
 ## Technology Stack
