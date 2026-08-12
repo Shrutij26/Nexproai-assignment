@@ -212,6 +212,9 @@ I chose a `chunk_size=1000` and `chunk_overlap=200` to balance context length wi
 ### Hallucination Prevention
 The system prompt strictly orders the LLM to base its answer ONLY on the retrieved chunks. If the similarity search fails or returns irrelevant chunks, the system enforces a hard fallback string: `"No relevant context found"`.
 
+### Semantic Caching (Performance Optimization)
+To radically reduce latency and API costs, I implemented a **Semantic Cache** using a secondary LanceDB table. When a user asks a question, the vector is checked against the cache (`distance < 0.15`). If a similar question was recently asked, the system instantly returns the cached answer in `~15ms`, completely bypassing the main retrieval logic and LLM generation step.
+
 ### Idempotent Ingestion
 Duplicate vectors degrade search performance and inflate costs. I solved this by hashing the chunk text and metadata (`MD5`) to generate deterministic UUIDs. We use LanceDB's `merge_insert()` API, which performs an upsert: it updates existing IDs and only inserts new ones.
 

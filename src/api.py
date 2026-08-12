@@ -58,6 +58,33 @@ async def query_rag(request: QueryRequest):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Embedding error: {str(e)}")
 
+    db = lancedb.connect(Config.LANCEDB_URI)
+    CACHE_TABLE = "semantic_cache"
+
+    # 1.5 Semantic Cache Check
+    try:
+        if CACHE_TABLE in db.table_names():
+            cache_tbl = db.open_table(CACHE_TABLE)
+            cache_results = cache_tbl.search(query_vector).limit(1).to_pandas()
+            
+            if not cache_results.empty:
+                best_match = cache_results.iloc[0]
+                # If distance is very small, it means someone asked almost the exact same question
+                if best_match.get("_distance", 1.0) < 0.15:
+                    cache_latency = time.time() - start_time
+                    return QueryResponse(
+                        answer=best_match["answer"],
+                        retrieved_chunks=[],
+                        metrics={
+                            "retrieved_chunk_count": 0,
+                            "retrieval_latency_ms": 0, # Skipped main retrieval
+                            "total_latency_ms": round(cache_latency * 1000, 2),
+                            "token_usage": {"prompt_tokens": 0, "completion_tokens": 0, "total_tokens": 0, "note": "Served from Semantic Cache (Zero Cost)"}
+                        }
+                    )
+    except Exception as e:
+        print(f"Cache read error: {e}")
+
     # 2. Retrieval
     retrieval_start = time.time()
     db = lancedb.connect(Config.LANCEDB_URI)
@@ -133,6 +160,18 @@ async def query_rag(request: QueryRequest):
         answer = response.content
         if hasattr(response, "response_metadata") and "token_usage" in response.response_metadata:
             token_usage = response.response_metadata["token_usage"]
+
+    # Save successful answers to the Semantic Cache
+    if "No relevant context found" not in answer:
+        cache_data = [{"vector": query_vector, "question": request.question, "answer": f"⚡ [CACHED] {answer}"}]
+        try:
+            if CACHE_TABLE in db.table_names():
+                cache_tbl = db.open_table(CACHE_TABLE)
+                cache_tbl.add(cache_data)
+            else:
+                db.create_table(CACHE_TABLE, data=cache_data)
+        except Exception as e:
+            print(f"Cache write error: {e}")
 
     total_latency = time.time() - start_time
     
